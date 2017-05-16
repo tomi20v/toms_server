@@ -22,14 +22,15 @@ I'd move some logic from the controller to a separate service, eg. where it make
 ### dependencies
 
 `composer install`
-(requries composer)
+(requires composer)
 
 ### init database
 
-create folder '~/var/data'
+create folder '~/var/data' (a .keep could be added here and in .gitignore)
 `mkdir var/data`
 init DB:
 `bin/console doctrine:database:create`
+`bin/console doctrine:schema:create`
 (you might need to chmod the folder/DB file if running the server with a different user)
 
 ## Getting started, running (after install)
