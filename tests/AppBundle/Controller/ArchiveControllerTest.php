@@ -52,7 +52,7 @@ class ArchiveControllerTest extends \PHPUnit_Framework_TestCase
         $this->controller->method('get')
             ->willReturnMap([
                 ['app_bundle.archive_service', $this->archiveService],
-                ['app_bundle.archive_controller_validator', $this->validator],
+                ['app_bundle.validator.archive_controller_validator', $this->validator],
             ]);
 
         // I'll mock out stream_get_contents but I need a resource to check call params
