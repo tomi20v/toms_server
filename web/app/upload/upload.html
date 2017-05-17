@@ -1,0 +1,12 @@
+<div ng-controller="UploadCtrl as vm">
+  <div upload-button
+       class="btn"
+       param="file"
+       url="{{vm.getUploadUrl()}}"
+       on-upload="vm.onUpload()"
+       on-success="vm.onSuccess()"
+       on-error="vm.onError()"
+       >Upload archive:</div>
+  <div ng-if="vm.error">There was an error uploading.</div>
+  <div ng-if="vm.success">The file was uploaded.</div>
+</div>

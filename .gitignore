@@ -17,5 +17,9 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
+!/web/app/bower_components
+/web/app/bower_components/*
+!web/app/bower_components/.gitkeep
 .idea
 composer.phar
+node_modules/

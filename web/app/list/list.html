@@ -1,0 +1,12 @@
+<div ng-controller="ListCtrl as vm">
+  <p>List:</p>
+  <ul ng-if="!vm.isEmpty()">
+    <li ng-repeat="archive in vm.archives">
+      <a href="{{ vm.viewUrl(archive) }}" target="_blank">{{archive.fname}}</a>
+      <button ng-click="vm.delete(archive)">REMOVE</button>
+    </li>
+  </ul>
+  <p ng-if="vm.loading">loading...</p>
+  <p ng-if="vm.error">Error while loading!</p>
+  <p ng-if="vm.isEmpty()">There are no archives</p>
+</div>

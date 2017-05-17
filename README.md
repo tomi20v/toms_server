@@ -2,6 +2,7 @@ server
 ======
 
 server api made with Symfony3, FOSRestBundle and Doctrine
+the client is integrated for convenience
 
 ## Notes
 
@@ -37,4 +38,6 @@ navigate to
 there is a `phpunit-5.7.phar` committed for convenience
 `php phpunit-5.7.phar`
 will run the tests.
+
+to run the client tests, you need the client repository
 
