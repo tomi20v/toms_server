@@ -5,11 +5,7 @@ server api made with Symfony3, FOSRestBundle and Doctrine
 
 ## Notes
 
-I've been using PHP 5.6 (with phpunit 5.7)
-
-I haven't used the build-in `Form` validation
-
-you may have to set the permissions in the var folder as per symfony install
+you may have to set the permissions in the var folder as per default symfony install
 
 ## Install
 
@@ -20,8 +16,6 @@ you may have to set the permissions in the var folder as per symfony install
 
 ### init database
 
-create folder '~/var/data' (a .keep could be added here and in .gitignore)
-`mkdir var/data`
 init DB:
 `bin/console doctrine:database:create`
 `bin/console doctrine:schema:create`
@@ -29,8 +23,14 @@ init DB:
 
 ## Getting started, running (after install)
 
+### running the server
+
 `bin/console server:run`
 will serve on localhost:8000 
+
+### access the webapp
+navigate to
+`http://localhost:8000/app/`
 
 ## Testing
 
