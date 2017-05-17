@@ -1,0 +1,9 @@
+services:
+
+    app_bundle.validator.archive_controller_validator:
+        class: AppBundle\Validator\ArchiveControllerValidator
+
+    app_bundle.archive_service:
+        class: AppBundle\Service\ArchiveService
+        arguments:
+            - "@doctrine"

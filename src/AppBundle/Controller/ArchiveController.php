@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Archive;
+use AppBundle\Service\ArchiveService;
+use AppBundle\Validator\ArchiveControllerValidator;
 use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -28,11 +30,11 @@ class ArchiveController extends FOSRestController
      */
     public function indexAction()
     {
+
         return $this->wrapLogic(function() {
-            // @todo filter results either here or in the serializer so it doesn't return the 'content' field
-            $archives = $this->getRepository()->findAll();
-            return $archives;
+            return $this->getService()->findAll();
         });
+
     }
 
     /**
@@ -44,10 +46,11 @@ class ArchiveController extends FOSRestController
      */
     public function showAction($id)
     {
-        try {
+
+        return $this->wrapLogic(function() use ($id) {
 
             /** @var Archive $archive */
-            $archive = $this->getDoctrine()->getRepository('AppBundle:Archive')->find($id);
+            $archive = $this->getService()->find($id);
             if (!$archive) {
                 throw new NotFoundHttpException();
             }
@@ -56,52 +59,37 @@ class ArchiveController extends FOSRestController
             $content = $archive->getContent();
 
             return new Response(
-                stream_get_contents($content),
+                $this->streamGetContents($content),
                 200,
                 ['Content-Type' => 'application/pdf']
             );
 
-        }
-        catch (HttpException $e) {
-            throw $e;
-        }
-        catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
+        });
+
     }
 
-    /**
+        /**
      * @Rest\Post("api/archive/")
      * @throws \Exception
      */
     public function createAction(Request $request)
     {
+
         return $this->wrapLogic(function() use ($request) {
 
             $file = $request->files->get('file');
-            if (!$file instanceof UploadedFile) {
-                throw new \Exception('no file');
-            }
-            elseif ($file->getError() !== 0) {
-                throw new \Exception($file->getErrorMessage());
-            }
+
+            $this->getValidator()->validateUploadedFile($file);
+
             $fname = $file->getClientOriginalName();
-            if (empty($fname)) {
-                throw new \Exception('filename');
-            }
-            // @todo here I should check the file type
-            $fp = fopen($file->getPathname(), 'rb');
+            $this->getValidator()->validateFname($fname);
+
+            $fp = $this->fopen($file);
             if (!$fp) {
                 throw new \Exception('internal');
             }
 
-            $archive = new Archive();
-            $archive->setFname($fname);
-            $archive->setContent($fp);
-
-            $em = $this->getManager();
-            $em->persist($archive);
-            $em->flush();
+            $this->getService()->create($fname, $fp);
 
             return true;
 
@@ -114,14 +102,27 @@ class ArchiveController extends FOSRestController
     public function deleteAction($id)
     {
         return $this->wrapLogic(function() use ($id) {
-            $archive = $this->getRepository()->find($id);
-            if (!$archive) {
-                throw new NotFoundHttpException();
-            }
-            $em = $this->getManager();
-            $em->remove($archive);
-            $em->flush();
+            $this->getService()->delete($id);
+            return true;
         });
+    }
+
+    /**
+     * @param resource $content
+     * @return string
+     */
+    protected function streamGetContents($content)
+    {
+        return stream_get_contents($content);
+    }
+
+    /**
+     * @param UploadedFile $file
+     * @return resource
+     */
+    protected function fopen(UploadedFile $file)
+    {
+        return fopen($file->getPathname(), 'rb');
     }
 
     private function wrapLogic(callable $fn)
@@ -138,19 +139,23 @@ class ArchiveController extends FOSRestController
     }
 
     /**
-     * @return \Doctrine\Common\Persistence\ObjectManager
+     * @return ArchiveService
      */
-    private function getManager()
+    private function getService()
     {
-        return $this->getDoctrine()->getManager();
+        /** @var ArchiveService $ret */
+        $ret = $this->get('app_bundle.archive_service');
+        return $ret;
     }
 
     /**
-     * @return \Doctrine\Common\Persistence\ObjectRepository
+     * @return ArchiveControllerValidator
      */
-    private function getRepository()
+    private function getValidator()
     {
-        return $this->getManager()->getRepository('AppBundle:Archive');
+        /** @var ArchiveControllerValidator $ret */
+        $ret = $this->get('app_bundle.validator.archive_controller_validator');
+        return $ret;
     }
 
 }

@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * Archive
@@ -33,6 +34,7 @@ class Archive
      * @var string
      *
      * @ORM\Column(name="content", type="blob")
+     * @Exclude
      */
     private $content;
 
