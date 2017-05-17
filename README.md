@@ -15,6 +15,11 @@ you may have to set the permissions in the var folder as per default symfony ins
 `composer install`
 (requires composer)
 
+### frontend dependencies
+
+`npm install`
+will install client dependencies
+
 ### init database
 
 init DB:
